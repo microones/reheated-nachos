@@ -1,6 +1,20 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Què és Reheated Nachos?
+Reheated Nachos és un temporitzador que permet mantenir un seguiment del temps dedicat amb gràfiques senzilles. Amb cada temporitzador, escalfaràs un plat de menjar al teu gust.
+
+## D'on surt la idea de Reheated Nachos?
+És un "remake" de l'aplicació mòbil Forest, amb què es podia plantar un arbre mentre estudiaves. Una empresa més grossa va comprar l'aplicació i ara és de pagament amb subscripció mensual.
+
+## Què vol dir el nom Reheated Nachos
+Reheating nachos is internet-speak for producing creative work—such as a song, album, acting performance, lewk, etc.—that is similar to, but (usually) not as good as, one that came before. In other words, to reheat nachos is to build on someone else’s work (or one’s own) without adding anything new or fresh. (https://www.merriam-webster.com/slang/reheat-nachos)
+
+A més, literalment es poden reescalfar natxos! 
+
+
+
 
 ## Getting Started
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
 
 First, run the development server:
 
