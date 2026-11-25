@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="ca">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>reheated nachos</title>
+		<style>
+			body {
+				max-width: 680px;
+				margin: 0 auto;
+				padding: 0 1.2em 3em;
+				font-family: Georgia, serif;
+				line-height: 1.7;
+				text-align: center;
+			}
+			small, .gris { color: #888; }
+			a, button.enllac { color: inherit; }
+			input, button { font: inherit; }
+			input {
+				padding: 0.3em 0.5em;
+				border: 1px solid #000;
+				border-radius: 0;
+				outline: none;
+				width: 16em;
+				max-width: 100%;
+				box-sizing: border-box;
+			}
+			button {
+				padding: 0.3em 1.2em;
+				border: 1px solid #000;
+				border-radius: 0;
+				background: #fff;
+				cursor: pointer;
+			}
+			button:hover { background: #f2f2f2; }
+			button.enllac, button.enllac:hover { border: 0; padding: 0; background: none; text-decoration: underline; }
+			form p { margin: 0.5em 0; }
+			.control { display: flex; justify-content: center; gap: 0.5em; }
+			.control input { margin: 0; }
+			button.quadrat { padding: 0 0.55em; display: inline-flex; align-items: center; }
+			.controls { width: fit-content; max-width: 100%; margin: 0 auto; }
+			.desplegable { position: relative; margin: 0.5em 0; text-align: left; }
+			#menjar, #menjars li {
+				display: flex;
+				align-items: center;
+				gap: 0.5em;
+				width: 100%;
+				box-sizing: border-box;
+				padding: 0.15em 0.5em;
+			}
+			#menjar { background: #fff; }
+			#menjar:hover:not(:disabled) { background: #f2f2f2; }
+			#menjar:disabled { cursor: default; color: #888; border-color: #bbb; }
+			#menjar .fletxa { margin-left: auto; }
+			#menjar img, #menjars img { width: 24px; height: 24px; }
+			#menjars {
+				position: absolute;
+				z-index: 1;
+				left: 0; right: 0;
+				margin: -1px 0 0;
+				padding: 0;
+				list-style: none;
+				background: #fff;
+				border: 1px solid #000;
+			}
+			#menjars li { cursor: pointer; }
+			#menjars li:hover, #menjars li[aria-selected="true"] { background: #f2f2f2; }
+			button.quadrat svg { width: 14px; height: 14px; display: block; }
+			#vista-app h2 {
+				margin: 3.2em 0 0.2em;
+			}
+			#buit, #estad-buit { margin-top: 0; }
+			.pestanyes { margin: 0 0 0.3em; }
+			.pestanyes button.enllac[aria-pressed="true"] { text-decoration: none; font-weight: bold; }
+			tr.total td { font-weight: bold; }
+			.navega { display: flex; justify-content: space-between; align-items: baseline; gap: 0.8em; margin: 0.2em 0; }
+			.navega button { white-space: nowrap; }
+			@media (max-width: 600px) { .navega .paraula { display: none; } }
+			.navega button.enllac:disabled { color: #bbb; text-decoration: none; cursor: default; }
+			h1 { margin-top: 1.4em; }
+			/* el fum dels natxos, en vermell, sobre la paraula "reheated" */
+			.fum { position: relative; }
+			.fum img {
+				position: absolute;
+				left: 50%;
+				bottom: 85%;
+				transform: translateX(-50%);
+				height: 1em;
+				width: auto;
+				pointer-events: none;
+			}
+			/* un natxo vermell gran i girat, per darrere de les últimes lletres de "nachos" */
+			.titol-natxos { position: relative; z-index: 0; }
+			.titol-natxos img {
+				position: absolute;
+				z-index: -1;
+				right: -0.15em;
+				top: 50%;
+				height: 1.5em;
+				width: auto;
+				transform: translateY(-50%) rotate(-14deg);
+				pointer-events: none;
+			}
+			#microones {
+				width: 280px;
+				max-width: 100%;
+				height: auto;
+				display: block;
+				margin: 0 auto;
+			}
+			#rellotge {
+				font-size: 3.2em;
+				font-variant-numeric: tabular-nums;
+				margin: 0 0 0.15em;
+				line-height: 1.2;
+				letter-spacing: 1px;
+			}
+			#rellotge.en-marxa { color: #fb2d2e; }
+			#error { color: #fb2d2e; min-height: 1.7em; margin: 0.3em 0; }
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				margin-top: 0;
+				text-align: left;
+			}
+			th { font-weight: normal; color: #888; border-bottom: 1px solid #ccc; }
+			td, th { padding: 0.25em 0.4em; }
+			tr + tr td { border-top: 1px solid #eee; }
+			td.temps { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+			th.temps { text-align: right; }
+			td.data { white-space: nowrap; }
+			/* a l'ordinador, data i temps complets; al mòbil, curts */
+			.curt { display: none; }
+			@media (max-width: 600px) { .llarg { display: none; } .curt { display: inline; } }
+			td.accions { white-space: nowrap; text-align: right; width: 1%; }
+			td input { width: 100%; padding: 0 0.2em; }
+			td input.durada { width: 5.5em; text-align: right; }
+			button.icona {
+				border: 0;
+				padding: 0 0.15em;
+				background: none;
+				line-height: 1;
+				vertical-align: middle;
+			}
+			button.icona:hover { background: none; }
+			button.icona svg { width: 15px; height: 15px; display: block; }
+			button.icona:hover svg { stroke: #fb2d2e; }
+			tr.a-esborrar td:not(.accions) { color: #fb2d2e; text-decoration: line-through; }
+			tr.a-esborrar button.icona:first-child svg { stroke: #fb2d2e; }
+			#qui { margin-top: 3em; }
+			#qui p { margin: 0.3em 0; }
+			#importa-estat:empty, #admin-estat:empty { display: none; }
+			#vista-admin h3 { margin: 1.6em 0 0.3em; font-size: 1em; }
+			#admin-estat { border: 1px solid #000; padding: 0.4em 0.6em; }
+			#admin-estat code { font-size: 1.1em; user-select: all; }
+			#usuaris td.accions { font-size: 0.9em; }
+		</style>
+	</head>
+	<body>
+		<h1><span class="fum">reheated<img src="fum.png" alt="" width="164" height="127"></span> <span class="titol-natxos">nachos<img src="natxo.png" alt="" width="290" height="267"></span></h1>
+		<p id="error" role="alert"></p>
+
+		<section id="vista-login" hidden>
+			<form id="form-login">
+				<p><input name="email" type="email" placeholder="correu" autocomplete="email" required></p>
+				<p><input name="password" type="password" placeholder="contrasenya" autocomplete="current-password" minlength="8" required></p>
+				<p><button id="boto-login">entra</button></p>
+			</form>
+		</section>
+
+		<section id="vista-contrasenya" hidden>
+			<p>És el primer cop que entres. Tria una contrasenya nova:</p>
+			<form id="form-contrasenya">
+				<p id="camp-actual" hidden><input name="actual" type="password" placeholder="contrasenya actual" autocomplete="current-password"></p>
+				<p><input name="nova" type="password" placeholder="contrasenya nova" autocomplete="new-password" minlength="8" required></p>
+				<p><input name="repeteix" type="password" placeholder="repeteix-la" autocomplete="new-password" minlength="8" required></p>
+				<p><button>desa-la</button></p>
+			</form>
+			<p><small class="gris">almenys 8 caràcters.</small></p>
+		</section>
+
+		<section id="vista-admin" hidden>
+			<p style="text-align: left"><button type="button" class="enllac" id="tanca-admin">← torna a l'app</button></p>
+			<h2>panell d'admin</h2>
+
+			<h3>crea un usuari</h3>
+			<form id="form-nou-usuari">
+				<p><input name="email" type="email" placeholder="correu" required></p>
+				<p><input name="nom" placeholder="nom (opcional)" maxlength="100"></p>
+				<p><button>crea'l</button></p>
+			</form>
+			<p id="admin-estat"></p>
+
+			<h3>usuaris</h3>
+			<table>
+				<thead><tr><th>correu</th><th>nom</th><th class="temps">plats</th><th></th></tr></thead>
+				<tbody id="usuaris"></tbody>
+			</table>
+			<p><small class="gris">* encara ha de canviar la contrasenya provisional.</small></p>
+		</section>
+
+		<section id="vista-app" hidden>
+			<img id="microones" src="microones-a-ma-bw-1.webp?v=2" alt="Un microones buit dibuixat a mà" width="1400" height="881">
+			<div id="rellotge">00:00:00</div>
+			<form id="form-crono">
+				<div class="controls">
+					<p class="control">
+						<input id="etiqueta" placeholder="etiqueta (opcional)" maxlength="100">
+						<button id="boto-crono" class="quadrat" title="comença" aria-label="comença"></button>
+					</p>
+					<div class="desplegable">
+						<button type="button" id="menjar" aria-haspopup="listbox" aria-expanded="false" aria-label="menjar">
+							<img alt="" width="24" height="24"><span></span><span class="fletxa">▾</span>
+						</button>
+						<ul id="menjars" role="listbox" hidden></ul>
+					</div>
+				</div>
+			</form>
+
+			<h2>estadístiques</h2>
+			<p id="estad-buit" class="gris" hidden>quan escalfis menjar, en veuràs aquí el temps.</p>
+			<div id="estadistiques" hidden>
+				<p class="pestanyes">
+					<button type="button" class="enllac" data-vista="setmana">per setmana</button> ·
+					<button type="button" class="enllac" data-vista="mes">per mes</button> ·
+					<button type="button" class="enllac" data-vista="any">per any</button>
+				</p>
+				<p class="navega">
+					<button type="button" class="enllac" id="anterior" aria-label="anterior">&lt;<span class="paraula"> anterior</span></button>
+					<span id="periode"></span>
+					<button type="button" class="enllac" id="seguent" aria-label="següent"><span class="paraula">següent </span>&gt;</button>
+				</p>
+				<table><tbody id="estad-taula"></tbody></table>
+			</div>
+
+			<h2>darrers plats</h2>
+			<p id="buit" class="gris" hidden>encara no n'has escalfat cap.</p>
+			<table id="taula" hidden>
+				<thead><tr><th>data</th><th>etiqueta</th><th class="temps">temps<span class="llarg"> total</span></th><th></th></tr></thead>
+				<tbody id="llista"></tbody>
+			</table>
+			<p id="mes-plats" hidden>
+				<button type="button" class="enllac" id="mostra-mes">mostra'n 10 més</button> ·
+				<button type="button" class="enllac" id="mostra-tots">mostra'ls tots</button>
+			</p>
+		</section>
+
+		<div id="qui" hidden>
+			<p>
+				<button type="button" class="enllac" id="importa">importa d'un fitxer</button>
+				<input type="file" id="fitxer" accept=".json,application/json" hidden>
+			</p>
+			<p id="importa-estat" class="gris"></p>
+			<p><span class="gris" id="correu"></span><button type="button" class="enllac gris" id="correu-admin" title="panell d'admin" hidden></button> · <button class="enllac" id="sortir">surt</button></p>
+		</div>
+
+		<script>
+			const $ = (id) => document.getElementById(id);
+			let enMarxa = null;     // cronòmetre actiu {id, label, startedAt}
+			let tic = null;
+
+			const missatges = {
+				INVALID_EMAIL_OR_PASSWORD: "El correu o la contrasenya no són correctes.",
+				INVALID_EMAIL: "El correu no és vàlid.",
+				USER_ALREADY_EXISTS: "Ja hi ha un compte amb aquest correu.",
+				USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL: "Ja hi ha un compte amb aquest correu.",
+				PASSWORD_TOO_SHORT: "La contrasenya ha de tenir almenys 8 caràcters.",
+				PASSWORD_TOO_LONG: "La contrasenya és massa llarga.",
+			};
+
+			function error(msg) { $("error").textContent = msg || ""; }
+
+			async function api(path, body) {
+				const res = await fetch(path, body === undefined
+					? { credentials: "same-origin" }
+					: { method: "POST", credentials: "same-origin", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+				const data = await res.json().catch(() => null);
+				if (res.status === 429) throw new Error("Massa intents seguits. Espera una mica i torna-ho a provar.");
+				if (!res.ok) throw new Error((data && (missatges[data.code] || data.error || data.message)) || "Hi ha hagut un error (" + res.status + ")");
+				return data;
+			}
+
+			const duracio = (ms) => {
+				const s = Math.floor(ms / 1000);
+				return [Math.floor(s / 3600), Math.floor(s / 60) % 60, s % 60].map((n) => String(n).padStart(2, "0")).join(":");
+			};
+			const dataLlarga = (ms) => new Date(ms).toLocaleString("ca", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+			// temps curt: "45s", "23m", "1h 05m"
+			const curta = (ms) => {
+				const sec = Math.round(ms / 1000);
+				if (sec < 60) return sec + "s";
+				const min = Math.floor(sec / 60);
+				return min < 60 ? min + "m" : Math.floor(min / 60) + "h " + String(min % 60).padStart(2, "0") + "m";
+			};
+			// data curta: "25/11 14:03", i amb l'any ("25/11/25 14:03") si no és d'enguany
+			const data = (ms) => {
+				const d = new Date(ms), dos = (n) => String(n).padStart(2, "0");
+				const any = d.getFullYear() === new Date().getFullYear() ? "" : "/" + dos(d.getFullYear() % 100);
+				return d.getDate() + "/" + dos(d.getMonth() + 1) + any + " " + dos(d.getHours()) + ":" + dos(d.getMinutes());
+			};
+
+			// ---- sessió ----
+			// contrasenya amb què s'acaba d'entrar: així no cal tornar-la a escriure per canviar-la
+			let contrasenyaLogin = null;
+
+			function mostraVista(nom) {
+				for (const v of ["login", "contrasenya", "app", "admin"]) $("vista-" + v).hidden = v !== nom;
+			}
+
+			async function inicia() {
+				const s = await api("api/auth/get-session").catch(() => null);
+				if (s && s.user) {
+					// l'admin pot clicar el seu correu per obrir el panell
+					soc = s.user;
+					$("correu").textContent = s.user.isAdmin ? "" : s.user.email;
+					$("correu-admin").textContent = s.user.email;
+					$("correu-admin").hidden = !s.user.isAdmin || !!s.user.mustChangePassword;
+					$("qui").hidden = false;
+					if (s.user.mustChangePassword) {
+						// compte creat amb crea-usuari.ts: primer cal triar una contrasenya nova
+						$("camp-actual").hidden = !!contrasenyaLogin;
+						$("form-contrasenya").actual.required = !contrasenyaLogin;
+						$("importa").parentElement.hidden = true;
+						mostraVista("contrasenya");
+						atura();
+						return;
+					}
+					contrasenyaLogin = null;   // ja no cal: no la guardem més del necessari
+					$("importa").parentElement.hidden = false;
+					mostraVista("app");
+					await carrega();
+				} else {
+					$("qui").hidden = true;
+					mostraVista("login");
+					atura();
+				}
+			}
+
+			// ---- panell d'admin ----
+			let soc = null;   // usuari de la sessió
+
+			$("correu-admin").onclick = async () => {
+				error();
+				$("admin-estat").textContent = "";
+				mostraVista("admin");
+				atura();
+				await carregaUsuaris().catch((err) => error(err.message));
+			};
+			$("tanca-admin").onclick = () => { error(); inicia(); };
+
+			// mostra una contrasenya provisional perquè es pugui copiar i passar
+			function mostraContrasenya(text, email, password) {
+				$("admin-estat").replaceChildren(text + " " + email + ". contrasenya provisional: ", el("code", {}, password),
+					el("br"), el("small", { className: "gris" }, "no es tornarà a mostrar. l'haurà de canviar en entrar."));
+			}
+
+			async function carregaUsuaris() {
+				const usuaris = await api("api/admin/users");
+				$("usuaris").replaceChildren(...usuaris.map((u) => {
+					const tr = el("tr");
+					const accions = td("accions");
+					const confirma = (pregunta, fes) => accions.replaceChildren(pregunta + " ", boto("sí", fes), " / ", boto("no", omple));
+					function omple() {
+						if (u.id === soc.id) return accions.replaceChildren(el("span", { className: "gris" }, "tu"));
+						accions.replaceChildren(
+							boto("nova contrasenya", () => confirma("nova contrasenya?", async () => {
+								try { mostraContrasenya("nova contrasenya per a", u.email, (await api("api/admin/users/" + u.id + "/reset", {})).password); await carregaUsuaris(); }
+								catch (err) { error(err.message); }
+							})),
+							" · ",
+							boto("esborra", () => confirma("esborrar-lo amb tots els seus plats?", async () => {
+								try { await api("api/admin/users/" + u.id + "/delete", {}); $("admin-estat").textContent = "s'ha esborrat " + u.email + "."; await carregaUsuaris(); }
+								catch (err) { error(err.message); }
+							})));
+					}
+					omple();
+					tr.append(td("", u.email + (u.mustChangePassword ? " *" : "") + (u.isAdmin ? " (admin)" : "")), td("", u.name), td("temps", String(u.plats)), accions);
+					return tr;
+				}));
+			}
+
+			$("form-nou-usuari").onsubmit = async (e) => {
+				e.preventDefault();
+				const f = e.target;
+				error();
+				try {
+					const r = await api("api/admin/users", { email: f.email.value, name: f.nom.value });
+					f.reset();
+					mostraContrasenya("usuari creat:", r.email, r.password);
+					await carregaUsuaris();
+				} catch (err) { error(err.message); }
+			};
+
+			$("form-contrasenya").onsubmit = async (e) => {
+				e.preventDefault();
+				const f = e.target;
+				error();
+				if (f.nova.value !== f.repeteix.value) return error("Les dues contrasenyes noves no coincideixen.");
+				try {
+					await api("api/account/password", { currentPassword: contrasenyaLogin || f.actual.value, newPassword: f.nova.value });
+					contrasenyaLogin = null;
+					f.reset();
+					await inicia();
+				} catch (err) { error(err.message); }
+			};
+
+			$("form-login").onsubmit = async (e) => {
+				e.preventDefault();
+				const f = e.target;
+				error();
+				try {
+					await api("api/auth/sign-in/email", { email: f.email.value, password: f.password.value });
+					contrasenyaLogin = f.password.value;
+					f.reset();
+					await inicia();
+				} catch (err) { error(err.message); }
+			};
+
+			// importa una còpia de seguretat JSON (format focus-backup)
+			$("importa").onclick = () => $("fitxer").click();
+			$("fitxer").onchange = async () => {
+				const f = $("fitxer").files[0];
+				$("fitxer").value = "";
+				if (!f) return;
+				const estat = $("importa-estat");
+				estat.textContent = "s'està important...";
+				try {
+					let dades;
+					try { dades = JSON.parse(await f.text()); } catch { throw new Error("El fitxer no és un JSON vàlid."); }
+					const r = await api("api/timers/import", dades);
+					estat.textContent = "s'han importat " + r.added + " cronòmetres" +
+						(r.repeated ? " (" + r.repeated + " ja hi eren)" : "") + (r.skipped ? " · " + r.skipped + " sense temps, omesos" : "") + ".";
+					await carrega();
+				} catch (err) { estat.textContent = err.message; }
+			};
+
+			$("sortir").onclick = async () => {
+				contrasenyaLogin = null;
+				await api("api/auth/sign-out", {}).catch(() => {});
+				await inicia();
+			};
+
+			// ---- menjar (desplegable amb icones; de moment només natxos) ----
+			const MENJARS = [{ id: "natxos", nom: "natxos originals", icona: "natxos.png" }];
+			let menjar = MENJARS[0].id;
+			function triaMenjar(id) {
+				menjar = id;
+				const m = MENJARS.find((x) => x.id === id);
+				$("menjar").querySelector("img").src = m.icona;
+				$("menjar").querySelector("span").textContent = m.nom;
+				$("menjars").replaceChildren(...MENJARS.map((x) => {
+					const li = el("li", { role: "option", ariaSelected: String(x.id === id) }, el("img", { src: x.icona, alt: "" }), x.nom);
+					li.onclick = () => { triaMenjar(x.id); tancaMenjars(); $("menjar").focus(); };
+					return li;
+				}));
+			}
+			function tancaMenjars() { $("menjars").hidden = true; $("menjar").ariaExpanded = "false"; }
+			$("menjar").onclick = () => {
+				const obre = $("menjars").hidden;
+				$("menjars").hidden = !obre;
+				$("menjar").ariaExpanded = String(obre);
+			};
+			document.addEventListener("click", (e) => { if (!e.target.closest(".desplegable")) tancaMenjars(); });
+			document.addEventListener("keydown", (e) => { if (e.key === "Escape") tancaMenjars(); });
+
+			// ---- cronòmetre ----
+			function pinta() {
+				$("rellotge").textContent = duracio(enMarxa ? Date.now() - enMarxa.startedAt : 0);
+			}
+			function atura() { clearInterval(tic); tic = null; }
+
+			function mostraEstat() {
+				atura();
+				$("rellotge").classList.toggle("en-marxa", !!enMarxa);
+				$("boto-crono").innerHTML = enMarxa ? STOP : PLAY;
+				$("boto-crono").title = $("boto-crono").ariaLabel = enMarxa ? "atura" : "comença";
+				$("microones").src = enMarxa ? "microones-reheating-nachos-a-ma-bw-1.webp?v=2" : "microones-a-ma-bw-1.webp?v=2";
+				$("microones").alt = enMarxa ? "Un microones dibuixat a mà escalfant natxos" : "Un microones buit dibuixat a mà";
+				// mentre escalfa, no es pot canviar el menjar
+				$("menjar").disabled = !!enMarxa;
+				if (enMarxa) tancaMenjars();
+				if (enMarxa) { $("etiqueta").value = enMarxa.label; tic = setInterval(pinta, 250); }
+				pinta();
+			}
+
+			// icones senzilles, de línia
+			const svg = (d) => '<svg viewBox="0 0 16 16" fill="none" stroke="#000" stroke-width="1.3" stroke-linecap="square" aria-hidden="true">' + d + '</svg>';
+			const LLAPIS = svg('<path d="M11 2.5l2.5 2.5L5.5 13H3v-2.5z"/><path d="M9.5 4l2.5 2.5"/>');
+			const PLAY = '<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11l9-5.5z" fill="#000"/></svg>';
+			const STOP = '<svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" fill="#000"/></svg>';
+			const SI = svg('<path d="M2.5 8.5l3.5 3.5 7.5-8"/>');
+			const NO = svg('<path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/>');
+			const BROSSA = svg('<path d="M2.5 4.5h11M6 4.5V2.5h4v2M4 4.5l.8 9h6.4l.8-9M6.7 7v4.5M9.3 7v4.5"/>');
+
+			const el = (tag, props = {}, ...fills) => { const e = Object.assign(document.createElement(tag), props); e.append(...fills); return e; };
+			const td = (cls, ...fills) => el("td", cls ? { className: cls } : {}, ...fills);
+			const boto = (text, onclick) => el("button", { type: "button", className: "enllac", textContent: text, onclick });
+			const icona = (html, title, onclick) => el("button", { type: "button", className: "icona", innerHTML: html, title, ariaLabel: title, onclick });
+
+			// datetime-local vol l'hora local en format AAAA-MM-DDTHH:MM
+			const perInput = (ms) => { const d = new Date(ms); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 16); };
+			// "1:02:03", "02:03" o "3" (minuts) -> mil·lisegons
+			function llegeixDurada(text) {
+				const p = text.trim().split(":");
+				if (!p.every((x) => /^\d+$/.test(x)) || p.length > 3) return null;
+				const n = p.map(Number);
+				const s = p.length === 3 ? n[0] * 3600 + n[1] * 60 + n[2] : p.length === 2 ? n[0] * 60 + n[1] : n[0] * 60;
+				return s * 1000;
+			}
+
+			function filaNormal(t) {
+				const tr = el("tr");
+				tr.append(
+					td("data", el("span", { className: "llarg" }, dataLlarga(t.startedAt)), el("span", { className: "curt" }, data(t.startedAt))),
+					td(t.label ? "" : "gris", t.label || "—"),
+					td("temps", el("span", { className: "llarg" }, duracio(t.endedAt - t.startedAt)), el("span", { className: "curt" }, curta(t.endedAt - t.startedAt))),
+					td("accions",
+						icona(LLAPIS, "edita", () => tr.replaceWith(filaEdicio(t))),
+						icona(BROSSA, "esborra", () => tr.replaceWith(filaEsborra(t)))),
+				);
+				return tr;
+			}
+
+			function filaEdicio(t) {
+				const inici = el("input", { type: "datetime-local", value: perInput(t.startedAt) });
+				const etiqueta = el("input", { value: t.label, maxLength: 100, placeholder: "etiqueta" });
+				const durada = el("input", { className: "durada", value: duracio(t.endedAt - t.startedAt), title: "h:mm:ss" });
+				const tr = el("tr");
+				const cancel = () => tr.replaceWith(filaNormal(t));
+				const desa = async () => {
+					error();
+					// si no s'ha tocat la data, conserva els segons originals
+					const startedAt = inici.value === perInput(t.startedAt) ? t.startedAt : new Date(inici.value).getTime();
+					const ms = llegeixDurada(durada.value);
+					if (!startedAt || ms === null) return error("La data o el temps no són vàlids (temps: h:mm:ss).");
+					const keepMs = durada.value.trim() === duracio(t.endedAt - t.startedAt) ? t.endedAt - t.startedAt : ms;
+					try {
+						const nou = await api("api/timers/" + t.id + "/edit", { label: etiqueta.value, startedAt, endedAt: startedAt + keepMs });
+						tr.replaceWith(filaNormal(nou));
+						totsElsCronos = await api("api/timers/all");
+						mostraEstadistiques();
+					} catch (err) { error(err.message); }
+				};
+				for (const i of [inici, etiqueta, durada]) i.onkeydown = (e) => { if (e.key === "Enter") desa(); if (e.key === "Escape") cancel(); };
+				tr.append(td("", inici), td("", etiqueta), td("temps", durada), td("accions", boto("desa", desa), " ", boto("cancel·la", cancel)));
+				setTimeout(() => etiqueta.focus());
+				return tr;
+			}
+
+			function filaEsborra(t) {
+				const tr = filaNormal(t);
+				const no = () => tr.replaceWith(filaNormal(t));
+				const si = async () => {
+					error();
+					try { await api("api/timers/" + t.id + "/delete", {}); await carrega(); }
+					catch (err) { error(err.message); }
+				};
+				// mateixa amplada que el llapis i la paperera: ✓ esborra, ✕ cancel·la; la fila es ratlla
+				tr.classList.add("a-esborrar");
+				tr.lastChild.replaceChildren(icona(SI, "sí, esborra-ho", si), icona(NO, "no, deixa-ho", no));
+				return tr;
+			}
+
+			// quants darrers plats es mostren (0 = tots)
+			let quants = 10;
+
+			function mostraLlista(timers, total) {
+				$("llista").replaceChildren(...timers.map(filaNormal));
+				$("taula").hidden = timers.length === 0;
+				$("buit").hidden = timers.length > 0;
+				$("mes-plats").hidden = timers.length >= total;
+			}
+
+			$("mostra-mes").onclick = () => { quants = (quants || 10) + 10; carrega().catch((err) => error(err.message)); };
+			$("mostra-tots").onclick = () => { quants = 0; carrega().catch((err) => error(err.message)); };
+
+			async function carrega() {
+				const [{ running, recent, total }, tots] = await Promise.all([api("api/timers?limit=" + quants), api("api/timers/all")]);
+				enMarxa = running;
+				if (!running) $("etiqueta").value = "";
+				mostraEstat();
+				mostraLlista(recent, total);
+				totsElsCronos = tots;
+				mostraEstadistiques();
+			}
+
+			// ---- estadístiques ----
+			let totsElsCronos = [];
+			let vista = "setmana";
+
+			const hm = (ms) => { const m = Math.round(ms / 60000); return Math.floor(m / 60) + " h " + String(m % 60).padStart(2, "0") + " min"; };
+			const dilluns = (d) => { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; };
+			const clauDia = (d) => d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+
+			let despl = 0;   // 0 = període actual, -1 = l'anterior, ...
+
+			// [inici, fi) i nom del període triat, en l'hora local de qui mira
+			function periode() {
+				const avui = new Date();
+				if (vista === "setmana") {
+					const ini = dilluns(avui); ini.setDate(ini.getDate() + 7 * despl);
+					const fi = new Date(ini); fi.setDate(fi.getDate() + 7);
+					const dg = new Date(fi); dg.setDate(dg.getDate() - 1);
+					const nom = "setmana del " + ini.toLocaleDateString("ca", { day: "numeric", month: "short" }) + " al " + dg.toLocaleDateString("ca", { day: "numeric", month: "short", year: "numeric" });
+					return [ini, fi, nom];
+				}
+				if (vista === "mes") {
+					const ini = new Date(avui.getFullYear(), avui.getMonth() + despl, 1);
+					return [ini, new Date(ini.getFullYear(), ini.getMonth() + 1, 1), ini.toLocaleDateString("ca", { month: "long", year: "numeric" })];
+				}
+				const ini = new Date(avui.getFullYear() + despl, 0, 1);
+				return [ini, new Date(ini.getFullYear() + 1, 0, 1), String(ini.getFullYear())];
+			}
+
+			function mostraEstadistiques() {
+				const hiHa = totsElsCronos.length > 0;
+				$("estadistiques").hidden = !hiHa;
+				$("estad-buit").hidden = hiHa;
+				if (!hiHa) return;
+				for (const b of document.querySelectorAll(".pestanyes button")) b.ariaPressed = String(b.dataset.vista === vista);
+
+				const [ini, fi, nom] = periode();
+				$("periode").textContent = nom;
+				$("seguent").disabled = despl >= 0;
+				$("anterior").disabled = fi <= new Date(totsElsCronos[0].startedAt);   // no hi ha res més antic
+
+				// el cronòmetre compta al període on comença; etiquetes sense distingir majúscules
+				const per = new Map();
+				let total = 0;
+				for (const t of totsElsCronos) {
+					if (t.startedAt < ini.getTime() || t.startedAt >= fi.getTime()) continue;
+					const ms = t.endedAt - t.startedAt;
+					const k = t.label.trim().toLowerCase();
+					const e = per.get(k) || { nom: t.label.trim() || "sense etiqueta", ms: 0 };
+					e.ms += ms; total += ms;
+					per.set(k, e);
+				}
+				const fila = (cls, nom, ms, nomCls) => el("tr", cls ? { className: cls } : {},
+					td(nomCls || "", nom),
+					td("temps" + (ms ? "" : " gris"), ms ? hm(ms) : "—"));
+				const files = [...per.entries()].sort((a, b) => b[1].ms - a[1].ms)
+					.map(([k, e]) => fila("", e.nom, e.ms, k === "" ? "gris" : ""));
+				$("estad-taula").replaceChildren(fila("total", "TOTAL", total), ...files);
+			}
+
+			$("anterior").onclick = () => { despl--; mostraEstadistiques(); };
+			$("seguent").onclick = () => { if (despl < 0) despl++; mostraEstadistiques(); };
+			for (const b of document.querySelectorAll(".pestanyes button")) b.onclick = () => { vista = b.dataset.vista; despl = 0; mostraEstadistiques(); };
+
+			$("form-crono").onsubmit = async (e) => {
+				e.preventDefault();
+				error();
+				const label = $("etiqueta").value;
+				if (enMarxa && e.submitter !== $("boto-crono")) { $("etiqueta").blur(); return; }   // Enter: només desa l'etiqueta (onchange)
+				try {
+					if (enMarxa) await api("api/timers/stop", { label });
+					else await api("api/timers/start", { label, food: menjar });
+					await carrega();
+				} catch (err) { error(err.message); await carrega().catch(() => {}); }
+			};
+
+			// desa l'etiqueta si es canvia mentre el cronòmetre corre
+			$("etiqueta").onchange = () => {
+				if (enMarxa) api("api/timers/label", { label: $("etiqueta").value }).catch((err) => error(err.message));
+			};
+
+			triaMenjar(menjar);
+			inicia();
+		</script>
+	</body>
+</html>

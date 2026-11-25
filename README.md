@@ -1,3 +1,5 @@
+# Reheated Nachos
+
 ## Què és Reheated Nachos?
 Reheated Nachos és un temporitzador que permet mantenir un seguiment del temps dedicat amb gràfiques senzilles. Amb cada temporitzador, escalfaràs un plat de menjar al teu gust.
 
@@ -9,42 +11,27 @@ Reheating nachos is internet-speak for producing creative work—such as a song,
 
 A més, literalment es poden reescalfar natxos! 
 
+## L'app (v0.1b)
+Una pàgina senzilla: entres amb correu i contrasenya, tries el menjar, poses una etiqueta i el poses a escalfar (▶) fins que l'atures (■). A sota hi ha les estadístiques per setmana, mes i any (total i per etiqueta) i els darrers plats, que es poden editar o esborrar. També es pot importar una còpia de seguretat JSON (format `focus-backup`).
 
+Fet amb [Bun](https://bun.sh), SQLite (`bun:sqlite`) i [Better Auth](https://www.better-auth.com). Sense framework ni compilació: `server.ts` serveix l'API i `public/index.html`.
 
-
-## Getting Started
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
-
-First, run the development server:
-
+### Posar-la en marxa
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+bun install
+echo "BETTER_AUTH_SECRET=$(openssl rand -base64 32)" > .env
+bun run server.ts        # http://localhost:3002/app/
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Configuració a `.env`: `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` (l'adreça pública); opcionals `PORT`, `BASE_PATH`, `DB_PATH`.
+- Les dades són a `reheated-nachos.db`; les taules es creen soles en arrencar.
+- En producció corre amb pm2 i nginx hi envia `/app` (vegeu `nginx-app.conf`). Cal que nginx passi la IP real a `X-Forwarded-For`, que es fa servir per limitar els intents de login.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Usuaris
+El registre és tancat. Els comptes es creen des del panell d'admin (si ets admin, clicant el teu correu a baix de tot) o al servidor:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+bun run crea-usuari.ts [--admin] correu@exemple.cat "Nom"
+```
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Cada compte nou rep una contrasenya aleatòria que s'ha de canviar en entrar per primer cop.
