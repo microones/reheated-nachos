@@ -13,7 +13,7 @@ Reheating nachos is internet-speak for producing creative work—such as a song,
 
 A més, literalment es poden reescalfar natxos! 
 
-## L'app (v0.1b)
+## L'app (v1.0)
 Una pàgina senzilla: entres amb correu i contrasenya, tries el menjar, poses una etiqueta i el poses a escalfar (▶) fins que l'atures (■). A sota hi ha les estadístiques per setmana, mes i any (total i per etiqueta) i els darrers plats, que es poden editar o esborrar.
 
 Fet amb [Bun](https://bun.sh), SQLite (`bun:sqlite`) i [Better Auth](https://www.better-auth.com). Sense framework ni compilació: `server.ts` serveix l'API i `public/index.html`.

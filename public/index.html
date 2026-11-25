@@ -4,6 +4,10 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>reheated nachos</title>
+		<link rel="manifest" href="manifest.webmanifest">
+		<meta name="theme-color" content="#ffffff">
+		<link rel="icon" type="image/png" sizes="192x192" href="icona-192.png">
+		<link rel="apple-touch-icon" href="icona-180.png">
 		<style>
 			body {
 				max-width: 680px;
@@ -666,6 +670,8 @@
 
 			triaMenjar(menjar);
 			inicia();
+			// permet instal·lar-la com a app (PWA)
+			if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
 		</script>
 	</body>
 </html>

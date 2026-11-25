@@ -1,0 +1,16 @@
+{
+	"name": "reheated nachos",
+	"short_name": "reheated nachos",
+	"description": "Escalfa natxos mentre comptes el temps que hi dediques.",
+	"lang": "ca",
+	"start_url": "/app/",
+	"scope": "/app/",
+	"display": "standalone",
+	"background_color": "#ffffff",
+	"theme_color": "#ffffff",
+	"icons": [
+		{ "src": "icona-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+		{ "src": "icona-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+		{ "src": "icona-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+	]
+}

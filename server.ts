@@ -218,7 +218,13 @@ Bun.serve({
     if (path.startsWith("/api/admin/")) return adminApi(req, path);
     if (path.startsWith("/api/timers")) return timersApi(req, path);
     if (path === "/api/account/password") return passwordApi(req);
-    if (path === "/") return new Response(page, { headers: { "content-type": "text/html; charset=utf-8" } });
+    // no-cache: the browser always checks for a newer page (otherwise phones keep showing old versions)
+    if (path === "/") return new Response(page, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" } });
+    // installable web app (PWA): manifest and service worker, never cached so updates show up at once
+    if (path === "/manifest.webmanifest" || path === "/sw.js") {
+      const type = path === "/sw.js" ? "text/javascript; charset=utf-8" : "application/manifest+json";
+      return new Response(Bun.file(new URL(`./public${path}`, import.meta.url)), { headers: { "content-type": type, "cache-control": "no-cache" } });
+    }
     // images next to the page (only plain file names, no subfolders)
     if (/^\/[\w-]+\.(webp|png)$/.test(path)) {
       const img = Bun.file(new URL(`./public${path}`, import.meta.url));
