@@ -1,7 +1,9 @@
 # Reheated Nachos
+<img width="1257" height="760" alt="Captura de pantalla 2026-11-25 a les 13 19 42" src="https://github.com/user-attachments/assets/57d85b0f-dcc6-4075-879d-6b5b5cb3f89e" />
+
 
 ## Què és Reheated Nachos?
-Reheated Nachos és un temporitzador que permet mantenir un seguiment del temps dedicat amb gràfiques senzilles. Amb cada temporitzador, escalfaràs un plat de menjar al teu gust.
+Reheated Nachos és un cronòmetre que permet fer seguiment del temps que dediques a una tasca. Amb cada temporitzador, escalfaràs un plat de menjar al teu gust.
 
 ## D'on surt la idea de Reheated Nachos?
 És un "remake" de l'aplicació mòbil Forest, amb què es podia plantar un arbre mentre estudiaves. Una empresa més grossa va comprar l'aplicació i ara és de pagament amb subscripció mensual.
@@ -12,7 +14,7 @@ Reheating nachos is internet-speak for producing creative work—such as a song,
 A més, literalment es poden reescalfar natxos! 
 
 ## L'app (v0.1b)
-Una pàgina senzilla: entres amb correu i contrasenya, tries el menjar, poses una etiqueta i el poses a escalfar (▶) fins que l'atures (■). A sota hi ha les estadístiques per setmana, mes i any (total i per etiqueta) i els darrers plats, que es poden editar o esborrar. També es pot importar una còpia de seguretat JSON (format `focus-backup`).
+Una pàgina senzilla: entres amb correu i contrasenya, tries el menjar, poses una etiqueta i el poses a escalfar (▶) fins que l'atures (■). A sota hi ha les estadístiques per setmana, mes i any (total i per etiqueta) i els darrers plats, que es poden editar o esborrar.
 
 Fet amb [Bun](https://bun.sh), SQLite (`bun:sqlite`) i [Better Auth](https://www.better-auth.com). Sense framework ni compilació: `server.ts` serveix l'API i `public/index.html`.
 
