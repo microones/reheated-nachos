@@ -8,34 +8,50 @@
 			body {
 				max-width: 680px;
 				margin: 0 auto;
-				padding: 0 1.2em;
+				padding: 0 1.2em 3em;
 				font-family: Georgia, serif;
 				line-height: 1.7;
 				text-align: center;
 			}
-			img {
-				width: 280px;
-				max-width: 100%;
-				height: auto;
-			}
 			small {
 				color: #888;
 			}
-			#natxos {
-				margin: 0;
-				color: #fb2d2e;
-				font-size: 0.8em;
+			h1 { margin-top: 1.4em; }
+			/* el fum dels natxos, en vermell, sobre la paraula "reheated" */
+			.fum { position: relative; }
+			.fum img {
+				position: absolute;
+				left: 50%;
+				bottom: 85%;
+				transform: translateX(-50%);
+				height: 1em;
+				width: auto;
+				pointer-events: none;
+			}
+			/* un natxo vermell gran i girat, per darrere de les últimes lletres de "nachos" */
+			.titol-natxos { position: relative; z-index: 0; }
+			.titol-natxos img {
+				position: absolute;
+				z-index: -1;
+				right: -0.15em;
+				top: 50%;
+				height: 1.5em;
+				width: auto;
+				transform: translateY(-50%) rotate(-14deg);
+				pointer-events: none;
+			}
+			/* l'enllaç a l'app: tan cutre com sempre, però amb tot l'espai del món */
+			#app {
+				margin: 7em 0;
 			}
 		</style>
 	</head>
 	<body>
 		<p style="text-align: left;"><a href="https://microones.cat/">← tornar a la pàgina principal</a></p>
-		<p>Data de publicació prevista: gener 2027</p>
-		<img src="microones-reheating-nachos-a-ma-bw-1.webp" alt="Un microones dibuixat a mà escalfant natxos" width="1400" height="881" onclick="this.src = 'microones-a-ma-bw-1.webp'; this.alt = 'Un microones buit dibuixat a mà'; document.getElementById('natxos').hidden = false">
-		<p id="natxos" hidden>sembla que algú s'ha menjat els natxos...</p>
-		<h1>S'estan reescalfant els natxos de l'app Forest.</h1>
-		<p><a href="/app/">entra a l'app</a></p>
+		<h1><span class="fum">reheated<img src="fum.png" alt="" width="164" height="127"></span> <span class="titol-natxos">nachos<img src="natxo.png" alt="" width="290" height="267"></span></h1>
+		<p>Reheated Nachos és un cronòmetre que permet fer seguiment del temps que dediques a una tasca (per exemple, l'estudi). Amb cada temporitzador, escalfaràs un plat de menjar al teu gust.</p>
 		<p><small>Reheating nachos is internet-speak for producing creative work—such as a song, album, acting performance, lewk, etc.—that is similar to, but (usually) not as good as, one that came before. In other words, to reheat nachos is to build on someone else’s work (or one’s own) without adding anything new or fresh. (<a href="https://www.merriam-webster.com/slang/reheat-nachos">https://www.merriam-webster.com/slang/reheat-nachos</a>)</small></p>
+		<p id="app"><a href="/app/">entra a l'app</a></p>
 		<p>Codi font a GitHub: <a href="https://github.com/microones/reheated-nachos">microones/reheated-nachos</a></p>
 	</body>
 </html>
